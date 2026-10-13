@@ -94,10 +94,11 @@
       </div>
     </div>
 
-    <!-- 2. หน้า Dashboard คลังแก๊ง -->
-    <div v-else class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 relative z-25 transition-all duration-500">
-      <!-- Header Bar -->
-      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black/75 border-2 border-purple-600/40 p-6 sm:p-8 rounded-[2.5rem] backdrop-blur-2xl mb-8 shadow-[0_0_40px_rgba(168,85,247,0.18)] transition-all duration-300 hover:border-purple-500/60">
+    <!-- 2. หน้า Dashboard คลังแก๊ง (ค่อยๆ เฟดช้าๆ สมูทๆ จากบนลงล่าง) -->
+    <div v-else class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 relative z-25">
+      
+      <!-- Header Bar (ลำดับที่ 1) -->
+      <header class="animate-fadeIn-1 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black/75 border-2 border-purple-600/40 p-6 sm:p-8 rounded-[2.5rem] backdrop-blur-2xl mb-8 shadow-[0_0_40px_rgba(168,85,247,0.18)] transition-all duration-300 hover:border-purple-500/60">
         <div class="flex items-center gap-5">
           <img 
             src="/logo-text.png" 
@@ -130,8 +131,8 @@
         </button>
       </header>
 
-      <!-- Stats Overview & Money Management -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <!-- Stats Overview & Money Management (ลำดับที่ 2) -->
+      <div class="animate-fadeIn-2 grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="bg-black/70 border border-purple-800/40 p-6 sm:p-8 rounded-[2.5rem] backdrop-blur-2xl flex flex-col justify-between shadow-xl transition-all duration-300 hover:border-purple-600/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]">
           <div>
             <p class="text-xs font-bold text-purple-300/70 uppercase tracking-widest">เงินแก๊งทั้งหมด</p>
@@ -160,8 +161,8 @@
         </div>
       </div>
 
-      <!-- Inventory Management Section -->
-      <div class="bg-black/70 border-2 border-purple-600/30 rounded-[2.5rem] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(168,85,247,0.15)] transition-all duration-300 hover:border-purple-500/50">
+      <!-- Inventory Management Section (ลำดับที่ 3) -->
+      <div class="animate-fadeIn-3 bg-black/70 border-2 border-purple-600/30 rounded-[2.5rem] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(168,85,247,0.15)] transition-all duration-300 hover:border-purple-500/50">
         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
           <h3 class="text-xl font-black text-white flex items-center gap-2">
             📦 รายการไอเทม
@@ -215,7 +216,6 @@
                 </td>
                 <td class="py-4 px-5 text-right" v-if="userRole === 'boss'">
                   <div class="flex items-center justify-end gap-2">
-                    <!-- ช่องกรอกตัวเลขเพื่อเพิ่มหรือลดจำนวนทีละมากๆ -->
                     <input 
                       type="number" 
                       v-model.number="item.adjustAmount" 
@@ -510,6 +510,32 @@ const deleteItem = async (id) => {
   100% {
     transform: translateY(105vh) rotate(360deg);
   }
+}
+
+/* เอฟเฟกต์ Fade In แบบช้าและนุ่มนวล ไล่ระดับจากบนลงล่าง */
+@keyframes smoothFadeInSlow {
+  0% {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn-1 {
+  animation: smoothFadeInSlow 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fadeIn-2 {
+  opacity: 0;
+  animation: smoothFadeInSlow 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+}
+
+.animate-fadeIn-3 {
+  opacity: 0;
+  animation: smoothFadeInSlow 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
 }
 
 .snowflake {
