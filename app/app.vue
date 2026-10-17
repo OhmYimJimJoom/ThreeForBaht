@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-[#07050a] text-slate-100 font-sans selection:bg-purple-600 selection:text-white relative overflow-x-hidden" @click="triggerFirstPlay">
     
-    <!-- ❄️ เอฟเฟกต์หิมะตกต่อเนื่องแบบนุ่มนวล (แยกเลเยอร์อิสระ ไม่รีเซ็ตตอนคลิก) -->
+    <!-- ❄️ เอฟเฟกต์หิมะตกต่อเนื่องแบบนุ่มนวลสมูท ไม่รีเซ็ตตอนกดแอ็คชั่น -->
     <div class="fixed inset-0 pointer-events-none z-10 overflow-hidden">
-      <div v-for="n in 35" :key="n" class="snowflake" :style="getSnowStyle(n)">❄</div>
+      <div v-for="(flake, index) in snowFlakes" :key="index" class="snowflake" :style="flake">❄</div>
     </div>
 
     <!-- 🎵 เครื่องเล่นเพลง MP3 สไตล์หรูหรา -->
@@ -94,11 +94,11 @@
       </div>
     </div>
 
-    <!-- 2. หน้า Dashboard คลังแก๊ง (ค่อยๆ เฟดช้าๆ สมูทๆ จากบนลงล่าง) -->
+    <!-- 2. หน้า Dashboard คลังแก๊ง (ค่อยๆ เฟดไล่ระดับอย่างนุ่มนวลทีละส่วน) -->
     <div v-else class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 relative z-25">
       
       <!-- Header Bar (ลำดับที่ 1) -->
-      <header class="animate-fadeIn-1 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black/75 border-2 border-purple-600/40 p-6 sm:p-8 rounded-[2.5rem] backdrop-blur-2xl mb-8 shadow-[0_0_40px_rgba(168,85,247,0.18)] transition-all duration-300 hover:border-purple-500/60">
+      <header class="smooth-reveal-1 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-black/75 border-2 border-purple-600/40 p-6 sm:p-8 rounded-[2.5rem] backdrop-blur-2xl mb-8 shadow-[0_0_40px_rgba(168,85,247,0.18)] transition-all duration-300 hover:border-purple-500/60">
         <div class="flex items-center gap-5">
           <img 
             src="/logo-text.png" 
@@ -132,7 +132,7 @@
       </header>
 
       <!-- Stats Overview & Money Management (ลำดับที่ 2) -->
-      <div class="animate-fadeIn-2 grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="smooth-reveal-2 grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="bg-black/70 border border-purple-800/40 p-6 sm:p-8 rounded-[2.5rem] backdrop-blur-2xl flex flex-col justify-between shadow-xl transition-all duration-300 hover:border-purple-600/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]">
           <div>
             <p class="text-xs font-bold text-purple-300/70 uppercase tracking-widest">เงินแก๊งทั้งหมด</p>
@@ -162,16 +162,17 @@
       </div>
 
       <!-- Inventory Management Section (ลำดับที่ 3) -->
-      <div class="animate-fadeIn-3 bg-black/70 border-2 border-purple-600/30 rounded-[2.5rem] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(168,85,247,0.15)] transition-all duration-300 hover:border-purple-500/50">
+      <div class="smooth-reveal-3 bg-black/70 border-2 border-purple-600/30 rounded-[2.5rem] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(168,85,247,0.15)] transition-all duration-300 hover:border-purple-500/50">
         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
           <h3 class="text-xl font-black text-white flex items-center gap-2">
-            📦 รายการไอเทม
+            📦 รายการไอเทมและราคา
           </h3>
           
           <div v-if="userRole === 'boss'" class="bg-slate-950/90 border border-purple-800/50 p-4 rounded-3xl w-full lg:w-auto space-y-3 transition-all duration-300 shadow-inner">
             <div class="flex flex-wrap gap-2">
-              <input v-model="newItem.name" placeholder="ชื่อไอเทม" class="px-4 py-2.5 bg-slate-900 border border-purple-900/60 rounded-2xl text-sm flex-1 lg:w-48 text-white focus:outline-none focus:border-purple-400 transition-all duration-300" />
+              <input v-model="newItem.name" placeholder="ชื่อไอเทม" class="px-4 py-2.5 bg-slate-900 border border-purple-900/60 rounded-2xl text-sm flex-1 lg:w-40 text-white focus:outline-none focus:border-purple-400 transition-all duration-300" />
               <input v-model.number="newItem.quantity" type="number" placeholder="จำนวน" class="custom-number-input w-24 px-3 py-2.5 bg-slate-900 border border-purple-900/60 rounded-2xl text-sm text-white focus:outline-none focus:border-purple-400 transition-all duration-300" />
+              <input v-model.number="newItem.price" type="number" placeholder="ราคา (บาท/$)" class="custom-number-input w-28 px-3 py-2.5 bg-slate-900 border border-purple-900/60 rounded-2xl text-sm text-white focus:outline-none focus:border-purple-400 transition-all duration-300" />
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2 items-center">
@@ -197,6 +198,7 @@
                 <th class="py-4 px-5 w-24">รูปภาพ</th>
                 <th class="py-4 px-5">ชื่อไอเทม</th>
                 <th class="py-4 px-5">จำนวน</th>
+                <th class="py-4 px-5">ราคาต่อชิ้น</th>
                 <th class="py-4 px-5 text-right" v-if="userRole === 'boss'">จัดการ</th>
               </tr>
             </thead>
@@ -214,6 +216,25 @@
                     {{ item.quantity.toLocaleString() }} ชิ้น
                   </span>
                 </td>
+                <!-- คอลัมน์แสดงราคา (สมาชิกและหัวหน้าแก๊งมองเห็นได้) -->
+                <td class="py-4 px-5">
+                  <div class="flex items-center gap-2">
+                    <span class="text-emerald-400 font-black text-lg">
+                      $ {{ (item.price || 0).toLocaleString() }}
+                    </span>
+                    <!-- หากเป็น Boss สามารถแก้ไขราคาได้ทันทีในตาราง -->
+                    <div v-if="userRole === 'boss'" class="flex items-center gap-1.5 ml-2">
+                      <input 
+                        type="number" 
+                        v-model.number="item.editPrice" 
+                        placeholder="ราคาใหม่" 
+                        class="custom-number-input w-24 px-2.5 py-1.5 bg-slate-950 border border-purple-800/60 rounded-xl text-xs text-center text-white focus:outline-none focus:border-purple-400"
+                      />
+                      <button @click="updateItemPrice(item)" class="px-2.5 py-1.5 bg-purple-900/60 hover:bg-purple-600 border border-purple-400/50 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md">ตั้งราคา</button>
+                    </div>
+                  </div>
+                </td>
+                <!-- ส่วนจัดการเฉพาะ Boss -->
                 <td class="py-4 px-5 text-right" v-if="userRole === 'boss'">
                   <div class="flex items-center justify-end gap-2">
                     <input 
@@ -230,7 +251,7 @@
                 </td>
               </tr>
               <tr v-if="inventory.length === 0">
-                <td colspan="4" class="text-center py-12 text-purple-300/40 text-base">ยังไม่มีไอเทมในคลังแก๊ง</td>
+                <td :colspan="userRole === 'boss' ? 5 : 4" class="text-center py-12 text-purple-300/40 text-base">ยังไม่มีไอเทมในคลังแก๊ง</td>
               </tr>
             </tbody>
           </table>
@@ -258,26 +279,37 @@ const inventory = ref([])
 const imageMode = ref('url')
 const selectedFile = ref(null)
 const isUploading = ref(false)
-const newItem = ref({ name: '', quantity: 1, image_url: '' })
+const newItem = ref({ name: '', quantity: 1, price: 0, image_url: '' })
 
 // ตัวควบคุมเพลง MP3
 const audioPlayer = ref(null)
 const isPlaying = ref(false)
 const volume = ref(30)
 
-const getSnowStyle = (index) => {
-  const left = (index * 2.8) % 100
-  const duration = 7 + (index % 5) * 2
-  const delay = (index * 0.3) % 5
-  const size = 12 + (index % 4) * 3
-  const opacity = 0.4 + (index % 5) * 0.1
-  return {
-    left: `${left}%`,
-    animationDuration: `${duration}s`,
-    animationDelay: `${delay}s`,
-    fontSize: `${size}px`,
-    opacity: opacity,
-  }
+// สร้างสไตล์หิมะแบบสุ่มคงที่ครั้งเดียว เพื่อป้องกันการรีเซ็ตหรือกระตุกเวลาหน้าเว็บอัปเดตข้อมูล
+const snowFlakes = ref([])
+if (import.meta.client) {
+  snowFlakes.value = Array.from({ length: 35 }, (_, index) => {
+    let startTime = sessionStorage.getItem(`snow_start_${index}`)
+    if (!startTime) {
+      startTime = Date.now().toString()
+      sessionStorage.setItem(`snow_start_${index}`, startTime)
+    }
+    const elapsed = (Date.now() - Number(startTime)) / 1000
+    const duration = 7 + (index % 5) * 2
+    const delay = -(elapsed % duration)
+    const left = (index * 2.8) % 100
+    const size = 12 + (index % 4) * 3
+    const opacity = 0.4 + (index % 5) * 0.1
+
+    return {
+      left: `${left}%`,
+      animationDuration: `${duration}s`,
+      animationDelay: `${delay}s`,
+      fontSize: `${size}px`,
+      opacity: opacity,
+    }
+  })
 }
 
 const loadGangData = async () => {
@@ -296,7 +328,12 @@ const loadGangData = async () => {
 
   const { data: items } = await supabase.from('inventory').select('*').order('id', { ascending: true })
   if (items) {
-    inventory.value = items.map(item => ({ ...item, adjustAmount: null }))
+    inventory.value = items.map(item => ({ 
+      ...item, 
+      price: item.price || 0,
+      adjustAmount: null,
+      editPrice: null 
+    }))
   }
 }
 
@@ -463,6 +500,7 @@ const addItem = async () => {
     .insert([{ 
       name: newItem.value.name, 
       quantity: newItem.value.quantity || 1,
+      price: newItem.value.price || 0,
       image_url: finalImageUrl || ''
     }])
     .select()
@@ -470,13 +508,30 @@ const addItem = async () => {
   isUploading.value = false
 
   if (!error && data) {
-    inventory.value.push({ ...data[0], adjustAmount: null })
+    inventory.value.push({ ...data[0], adjustAmount: null, editPrice: null })
     newItem.value.name = ''
     newItem.value.quantity = 1
+    newItem.value.price = 0
     newItem.value.image_url = ''
     selectedFile.value = null
   } else {
     alert('ไม่สามารถเพิ่มไอเทมได้: ' + error?.message)
+  }
+}
+
+const updateItemPrice = async (item) => {
+  const newPrice = Number(item.editPrice)
+  if (isNaN(newPrice) || newPrice < 0) {
+    alert('กรุณากรอกราคาให้ถูกต้อง')
+    return
+  }
+
+  const { error } = await supabase.from('inventory').update({ price: newPrice }).eq('id', item.id)
+  if (!error) {
+    item.price = newPrice
+    item.editPrice = null
+  } else {
+    alert('ไม่สามารถอัปเดตราคาได้: ' + error.message)
   }
 }
 
@@ -513,29 +568,31 @@ const deleteItem = async (id) => {
 }
 
 /* เอฟเฟกต์ Fade In แบบช้าและนุ่มนวล ไล่ระดับจากบนลงล่าง */
-@keyframes smoothFadeInSlow {
+@keyframes smoothBlurFade {
   0% {
     opacity: 0;
-    transform: translateY(25px);
+    transform: translateY(30px) scale(0.98);
+    filter: blur(8px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
   }
 }
 
-.animate-fadeIn-1 {
-  animation: smoothFadeInSlow 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.smooth-reveal-1 {
+  animation: smoothBlurFade 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-.animate-fadeIn-2 {
+.smooth-reveal-2 {
   opacity: 0;
-  animation: smoothFadeInSlow 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  animation: smoothBlurFade 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards;
 }
 
-.animate-fadeIn-3 {
+.smooth-reveal-3 {
   opacity: 0;
-  animation: smoothFadeInSlow 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+  animation: smoothBlurFade 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards;
 }
 
 .snowflake {
